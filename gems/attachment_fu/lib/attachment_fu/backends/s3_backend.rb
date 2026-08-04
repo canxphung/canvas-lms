@@ -21,7 +21,7 @@ module AttachmentFu # :nodoc:
   module Backends
     # = AWS SDK Storage Backend
     #
-    # Enables use of {Amazon's Simple Storage Service}[http://aws.amazon.com/s3] as a storage mechanism
+    # Enables use of S3-compatible object storage as a storage mechanism.
     #
     # == Requirements
     #
@@ -44,6 +44,9 @@ module AttachmentFu # :nodoc:
     #     secret_access_key: <your key>
     #     # (or)
     #     vault_credential_path: <path to vault credential>
+    #     # for MinIO or another S3-compatible service:
+    #     endpoint: http://canvas-s3.inst.test:9000
+    #     force_path_style: true
     #
     #   test:
     #     bucket_name: appname_test
@@ -88,9 +91,8 @@ module AttachmentFu # :nodoc:
     #
     # === Optional configuration parameters
     #
-    # * <tt>:server</tt> - The server to make requests to. Defaults to <tt>s3.amazonaws.com</tt>.
-    # * <tt>:port</tt> - The port to the requests should be made on. Defaults to 80 or 443 if <tt>:use_ssl</tt> is set.
-    # * <tt>:use_ssl</tt> - If set to true, <tt>:port</tt> will be implicitly set to 443, unless specified otherwise. Defaults to false.
+    # * <tt>:endpoint</tt> - The full URI for an S3-compatible service, such as MinIO.
+    # * <tt>:force_path_style</tt> - Recommended for MinIO. Defaults to true when endpoint is configured.
     #
     # == Usage
     #
@@ -162,7 +164,7 @@ module AttachmentFu # :nodoc:
         s3_config = load_s3_config(base.attachment_options[:s3_config_path])
         bucket_name = s3_config.delete(:bucket_name)
 
-        s3 = Aws::S3::Resource.new(Canvas::AWS.validate_v2_config(s3_config, "amazon_s3.yml"))
+        s3 = Aws::S3::Resource.new(Canvas::AWS.validate_v2_s3_config(s3_config, "amazon_s3.yml"))
         @@bucket = s3.bucket(bucket_name)
 
         base.before_update :rename_file

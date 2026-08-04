@@ -3,6 +3,10 @@ development:
   access_key_id: access_key
   secret_access_key: secret_key
   region: us-east-1
+  # For MinIO or another S3-compatible service, set endpoint to the service URL.
+  # force_path_style is recommended for MinIO.
+  # endpoint: http://canvas-s3.inst.test:9000
+  # force_path_style: true
 
 test:
   bucket_name: test-bucket
@@ -15,3 +19,5 @@ production:
   access_key_id: access_key
   secret_access_key: secret_key
   region: us-east-1
+  # endpoint: https://s3-compatible-storage.example.com
+  # force_path_style: true

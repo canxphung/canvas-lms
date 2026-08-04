@@ -12,7 +12,8 @@ production:
   storage: local
   path_prefix: tmp/files
 
-## amazon storage example. requires valid amazon_s3.yml
+## S3-compatible storage example. Requires valid amazon_s3.yml.
+## This can point at AWS S3, MinIO, LocalStack, or another compatible service.
 #
 # production:
 #   storage: s3

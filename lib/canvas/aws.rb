@@ -47,6 +47,19 @@ module Canvas
       config
     end
 
+    def self.validate_v2_s3_config(config, source)
+      config = validate_v2_config(config, source)
+      endpoint = config[:endpoint] || config["endpoint"]
+      force_path_style_configured = config.key?(:force_path_style) || config.key?("force_path_style")
+
+      if endpoint.present? && !force_path_style_configured
+        config = config.dup
+        config[:force_path_style] = true
+      end
+
+      config
+    end
+
     def self.deprecator
       @deprecator ||= ActiveSupport::Deprecation.new
     end
