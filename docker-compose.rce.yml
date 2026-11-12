@@ -1,0 +1,30 @@
+# Start only the RCE service: docker compose up -d --no-deps --no-build --pull never canvasrceapi
+# The web mount persists the route if Canvas is recreated in the future.
+# Existing Canvas is configured in place; do not recreate it to apply this file.
+services:
+  web:
+    volumes:
+      - ./config/rce-nginx.conf:/usr/src/nginx/server.d/rce.conf:ro
+
+  canvasrceapi:
+    image: instructure/canvas-rce-api@sha256:84f712eba662808a379a9786e5885ff15c793fee920a43471d58ad2f2a775f1a
+    platform: linux/arm64
+    restart: unless-stopped
+    init: true
+    env_file:
+      - ./config/rce-api.env
+    environment:
+      NODE_ENV: production
+      HTTP_PROTOCOL_OVERRIDE: https
+      PASSENGER_MIN_INSTANCES: 1
+      PASSENGER_MAX_POOL_SIZE: 2
+      STATSD_HOST: 127.0.0.1
+      STATSD_PORT: 8125
+    expose:
+      - "80"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1/readiness"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s

@@ -26,7 +26,7 @@ services:
       - s3
 
   s3:
-    image: minio/minio:latest
+    image: pgsty/minio:latest  # minio/minio was removed from Docker Hub
     container_name: canvas-s3
     ports:
       - "9000:9000"  # MinIO API
@@ -45,7 +45,7 @@ services:
           - canvas-s3.$INST_DOMAIN
 
   createbuckets:
-    image: minio/mc:latest
+    image: pgsty/mc:latest  # minio/mc was removed from Docker Hub
     container_name: canvas-createbuckets
     depends_on:
       - s3
